@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kukespace.distributed.dao.mapper.SequenceIdMapper">
+    <resultMap id="BaseResultMap" type="com.kukespace.distributed.model.entities.SequenceId">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="stub" jdbcType="CHAR" property="stub"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, stub
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from SEQUENCE_ID
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from SEQUENCE_ID
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.kukespace.distributed.model.entities.SequenceId">
+        insert into SEQUENCE_ID (id, stub)
+        values (#{id,jdbcType=BIGINT}, #{stub,jdbcType=CHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.kukespace.distributed.model.entities.SequenceId">
+        insert into SEQUENCE_ID
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="stub != null">
+                stub,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="stub != null">
+                #{stub,jdbcType=CHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.kukespace.distributed.model.entities.SequenceId">
+        update SEQUENCE_ID
+        <set>
+            <if test="stub != null">
+                stub = #{stub,jdbcType=CHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.kukespace.distributed.model.entities.SequenceId">
+        update SEQUENCE_ID
+        set stub = #{stub,jdbcType=CHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!--  想要获取自增长id的话，只能通过将值封装到对象的属性上；直接在返回值上获取到的int值，是受影响的行数  -->
+    <insert id="generateId" useGeneratedKeys="true" keyProperty="id" keyColumn="id"
+            parameterType="com.kukespace.distributed.model.entities.SequenceId">
+        replace into SEQUENCE_ID (stub) VALUES ('anyword');
+        <selectKey keyColumn="id" keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+</mapper>
